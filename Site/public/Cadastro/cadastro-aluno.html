@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Towards Sucess | Cadastro</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <script src="../JS/funcoes.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="../IMG/Logo.png" alt="Logo">
+            <p class="logotipo">Towards <br> Sucess</p>
+        </div>
+        <div class="nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="">Simulador</a></li>
+                <li><a href="./cadastro.html">Cadastro</a></li>
+                <li><a href="../Login/login.html">Login</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="mensagem_erro">
+            <p> Mensagem de Erro </p>
+        </div>
+        <div class="area_cadastro_professor">
+            <div class="opcao_aluno_professor">
+                <h1>Cadastro Aluno</h1>
+                Nome Completo <br> <input type="text" id="input_nome_aluno"> <br>
+                Email: <br> <input type="text" id="input_email_aluno"> <br>
+                Telefone(Celular): <br> <input type="text" id="input_telefone_aluno"> <br>
+                Data Nascimento: <br> <input type="date" id="input_dataNasc_aluno"> <br>
+                ID Escolinha: <br> <input type="number" id="input_id_escolinha"> <br>
+                Posição <br>
+                <select name="Posicao" id="select_posicao">
+                    <option value="Selecione">Selecione:</option>
+                    <option value="Goleiro">Goleiro</option>
+                    <option value="Zagueiro">Zagueiro</option>
+                    <option value="Lateral">Lateral</option>
+                    <option value="Meio_Campo">Meio-Campo</option>
+                    <option value="Atacante">Atacante</option>
+                </select><br>
+                Senha: <br> <input type="password" id="input_senha"> <br>
+                Confirmar Senha: <br> <input type="password" id="input_confirmar_senha"> <br><br>
+                <button onclick="cadastrarAluno()">Cadastrar</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    function cadastrarAluno() {
+
+        //Recupere o valor da nova input pelo nome do id
+        // Agora vá para o método fetch logo abaixo
+        var nomeVar = input_nome_aluno.value;
+        var emailVar = input_email_aluno.value;
+        var telefoneAlunoVar = input_telefone_aluno.value;
+        var dataNascVar = input_dataNasc_aluno.value;
+        var idEscolinhaVar = input_id_escolinha.value;
+        var PosicaoVar = select_posicao.value;
+        var senhaVar = input_senha.value;
+        var confirmacaoSenhaVar = input_confirmar_senha.value;
+
+
+        if (nomeVar.length > 45) {
+            alert('Nome tem que ser menos de 45 caracteres');
+            return false;
+        }
+
+        if ((emailVar.search("@") == -1) && (emailVar.search(".com") == -1)) {
+            alert('O Email deve conter um @ e .com');
+            return false;
+        } 
+
+        if (emailVar.search("@") == -1) {
+            alert('O Email deve conter um @');
+            return false;
+        } 
+
+        if (emailVar.search(".com") == -1) {
+            alert('(O Email deve conter um .com)');
+            return false;
+        } 
+
+        if(telefoneAlunoVar.length != 11){
+            alert('Telefone tem que ter 11 caracteres');
+            return false;
+        }
+        if (senhaVar.length != 8) {
+            alert('Senha tem que ter 8 caracteres');
+            return false;
+        }
+
+        if (senhaVar != confirmacaoSenhaVar) {
+            alert('Confirmar senha está diferente de senha');
+            return false;
+        }
+
+        if (nomeVar == "" || emailVar == "" || telefoneAlunoVar ==  "" || dataNascVar == "" || PosicaoVar == "" || senhaVar == "" || confirmacaoSenhaVar == "") {
+            alert('Mensagem de erro para todos os campos em branco');
+            return false;
+        }
+
+        if (idEscolinhaVar == "") {
+            alert('O ID Escolinha deve ser inserido');
+            return false;
+        }
+
+        // Enviando o valor da nova input
+        fetch("/usuarios/cadastrarAluno", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                nomeServer: nomeVar,
+                emailServer: emailVar,
+                telefoneServer: telefoneAlunoVar,
+                dataNascServer: dataNascVar,
+                idEscolinhaServer: idEscolinhaVar,
+                posicaoServer: PosicaoVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+                alert('Cadastro realizado com sucesso! Redirecionando para tela de Login...');
+
+                setTimeout(() => {
+                    window.location = "../index.html";
+                }, "2000")
+
+                limparFormulario();
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+
+        return false;
+    }
+</script>
