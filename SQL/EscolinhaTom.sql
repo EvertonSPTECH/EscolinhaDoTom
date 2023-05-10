@@ -13,7 +13,8 @@ CREATE TABLE Escolinha(
     Cidade VARCHAR (45),
     Bairro VARCHAR (45),
     Rua VARCHAR (45),
-    Numero VARCHAR (45)
+    Numero VARCHAR (45),
+    Senha CHAR(8)
 );
 
 CREATE TABLE Professor(
@@ -21,7 +22,7 @@ CREATE TABLE Professor(
     nome VARCHAR(45),
     email VARCHAR(45),
     telefoneCelular CHAR(11),
-    Senha CHAR(11),
+    Senha CHAR(8),
     fkEscolinha INT, CONSTRAINT fkProfessorEscolinha FOREIGN KEY (fkEscolinha) REFERENCES Escolinha (idEscolinha)
 );
 
@@ -51,3 +52,10 @@ CREATE TABLE Sessao(
     fkAluno INT, CONSTRAINT fkSessaoAluno FOREIGN KEY (fkAluno) REFERENCES Aluno (idAluno),
     CONSTRAINT pkSessao PRIMARY KEY (idSessao, fkAluno)
 );
+
+SELECT * FROM Aluno;
+SELECT * FROM Escolinha;
+SELECT * FROM Professor;	
+SELECT Professor.nome, Aluno.nomeAluno, Aluno.Posicao, Escolinha.nomeTime FROM Escolinha
+	LEFT JOIN Professor ON Escolinha.idEscolinha = Professor.fkEscolinha 
+		JOIN Aluno ON Escolinha.idEscolinha = Aluno.fkEscolinha;
