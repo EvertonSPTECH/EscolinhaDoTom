@@ -9,10 +9,6 @@ CREATE TABLE Escolinha(
     telefoneFixo CHAR(10),
     telefoneCelular CHAR(11),
     CEP CHAR (8),
-    Estado VARCHAR (45),
-    Cidade VARCHAR (45),
-    Bairro VARCHAR (45),
-    Rua VARCHAR (45),
     Numero VARCHAR (45),
     Senha CHAR(8)
 );
