@@ -1,5 +1,5 @@
 body {
-    margin: auto;
+    margin: 0;
     background-color: black;
 }
 
@@ -211,6 +211,11 @@ li a {
 
 /* Simulador */
 
+.container_simulador{
+    display: flex;
+    justify-content: space-around;
+}
+
 .titulo-simulador{
     text-align: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -225,7 +230,6 @@ li a {
 }
 
 .cadastro-alunos-simulador{
-    margin-left: 5%;
     background-color: #F0E221;
     width: 25%;
     height: 400px;
@@ -296,6 +300,53 @@ li a {
 
 .Alunos-Cadastrados span{
     border-bottom: 2px solid black;
+}
+
+.treino_simulador{
+    background-color: #F0E221;
+    width: 25%;
+    height: 400px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+.treino_simulador button{
+    border: 2px solid gray;
+    font-size: 20px;
+    margin-top: 10px;
+    border-radius: 25px;
+    background-color: black;
+    color: white;
+}
+
+.treino_simulador button:hover{
+    border: 2px solid gray;
+    font-size: 20px;
+    margin-top: 10px;
+    border-radius: 25px;
+    background-color: white;
+    color: black;
+}
+
+.resultado_simulador{
+    background-color: #F0E221;
+    width: 25%;
+    height: 400px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+.resultado_final{
+    margin-top: 50px;
+    margin-left: 30px;
+    text-align: justify;
+    font-size: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sem_resultado{
+    font-size: 150px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 

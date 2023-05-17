@@ -28,55 +28,126 @@
         <h1><span class="span-titulo-simulador">SIMULADOR</span></h1>
         <h2><span class="span-subtitulo-simulador">Somente Professor</span></h2>
     </div>
-    <div class="cadastro-alunos-simulador">
-        <div class="titulo-cadastro-aluno-simulador">
-            <h1><span class="span-titulo-cadastro-aluno-simulador"> CADASTRO ALUNO </span></h1>
+    <div class="container_simulador">
+        <div class="cadastro-alunos-simulador">
+            <div class="titulo-cadastro-aluno-simulador">
+                <h1><span class="span-titulo-cadastro-aluno-simulador"> CADASTRO ALUNO </span></h1>
+            </div>
+            <div class="perguntas">
+                Qual o nome do aluno: <input type="text" id="input_nome_aluno_simulador"><br>
+                A posição do aluno: <select id="select_posicao_aluno_simulador">
+                    <option value="">Selecione:</option>
+                    <option value="Atacante">Atacante</option>
+                    <option value="Meio-Campista">Meio-Campista</option>
+                    <option value="Lateral">Lateral</option>
+                    <option value="Zagueiro">Zagueiro</option>
+                    <option value="Goleiro">Goleiro</option>
+                </select><br>
+            </div>
+            <button onclick="CadastrarAluno()">Cadastrar</button>
+            <div id="div_alunos_cadastrados" class="Alunos-Cadastrados">
+                <h4><span>Alunos Cadastrados</span> </h4>
+            </div>
         </div>
-        <div class="perguntas">
-            Qual o nome do aluno: <input type="text" id="input_nome_aluno_simulador"><br>
-            A posição do aluno: <select id="select_posicao_aluno_simulador">
-                <option value="">Selecione:</option>
-                <option value="Atacante">Atacante</option>
-                <option value="Meio-Campista">Meio-Campista</option>
-                <option value="Lateral">Lateral</option>
-                <option value="Zagueiro">Zagueiro</option>
-                <option value="Goleiro">Goleiro</option>
-            </select><br>
+        <div class="treino_simulador">
+            <div class="titulo-cadastro-aluno-simulador">
+                <h1><span class="span-titulo-cadastro-aluno-simulador"> TREINO</span></h1>
+            </div>
+            <div class="perguntas">
+                Nome do Aluno: <input type="text" id="input_nome_aluno_treino_cadastrado"><br>
+                Nota Treino Físico: <input type="number" min="0" max="10"
+                    id="input_nota_aluno_treino_fisico_simulador"><br>
+                Nota Treino Tático: <input type="number" min="0" max="10"
+                    id="input_nota_aluno_treino_tatico_simulador"><br>
+                Nota Treino com Bola: <input type="number" min="0" max="10"
+                    id="input_nota_aluno_treino_bola_simulador"><br>
+                Nota Entrosamento: <input type="number" min="0" max="10"
+                    id="input_nota_entrosamento_simulador"><br>
+            </div>
+            <button onclick="RealizarTreino()">Realizar Treino</button>
         </div>
-        <button onclick="CadastrarAluno()">Cadastrar</button>
-        <div id="div_alunos_cadastrados" class="Alunos-Cadastrados">
-            <h4><span>Alunos Cadastrados</span> </h4>
+        <div class="resultado_simulador">
+            <div class="titulo-cadastro-aluno-simulador">
+                <h1><span class="span-titulo-cadastro-aluno-simulador"> RESULTADO</span></h1>
+            </div>
+            <div id="resultado_treino" class="resultado_treino">
+                <span class="sem_resultado">?</span>
+            </div>
         </div>
     </div>
 </body>
 
 </html>
 <script>
-var ListaNomeAlunos = [] //Criando vetor para guardar o nome dos alunos
-var ListaPosicaoAlunos = [] //Criando vetor para guardar a posição dos alunos
+    var ListaNomeAlunos = [] //Criando vetor para guardar o nome dos alunos
+    var ListaPosicaoAlunos = [] //Criando vetor para guardar a posição dos alunos
 
-    function CadastrarAluno(){
+    function CadastrarAluno() {
         div_alunos_cadastrados.innerHTML = `<h4><span>Alunos Cadastrados</span> </h4>`
-        var NomeAluno = input_nome_aluno_simulador.value;
+        var NomeAlunoCadastro = input_nome_aluno_simulador.value;
         var PosicaoAluno = select_posicao_aluno_simulador.value;
 
-        if(PosicaoAluno == "" || NomeAluno == ""){ //Caso o nome e a posição do aluno esteja null não irá realizar o processo e emitirá um alerta para selecionar a posição
+        if (PosicaoAluno == "" || NomeAlunoCadastro == "") { //Caso o nome e a posição do aluno esteja null não irá realizar o processo e emitirá um alerta para selecionar a posição
             alert('Deve inserir todos os dados que são pedidos')
         } else { // Caso ao contrário irá enviar os dados para os dois vetores;
             // Os dados cadastrados irão para o topo como são últimos dados inseridos
-            ListaNomeAlunos.unshift(NomeAluno); 
+            ListaNomeAlunos.unshift(NomeAlunoCadastro);
             ListaPosicaoAlunos.unshift(PosicaoAluno);
         }
 
-        if(ListaNomeAlunos.length > 5 && ListaPosicaoAlunos.length > 5){ //se a quantidade de alunos cadastrados forem maior que 10, o mais antigo aluno é deletado
-            ListaNomeAlunos.pop(); 
+        if (ListaNomeAlunos.length > 5 && ListaPosicaoAlunos.length > 5) { //se a quantidade de alunos cadastrados forem maior que 10, o mais antigo aluno é deletado
+            ListaNomeAlunos.pop();
             ListaPosicaoAlunos.pop();
         }
 
-        for(var contador = 0; contador < ListaNomeAlunos.length && contador < ListaPosicaoAlunos.length; contador++){
+        for (var contador = 0; contador < ListaNomeAlunos.length && contador < ListaPosicaoAlunos.length; contador++) { //Apresentação dos alunos cadastrados
             div_alunos_cadastrados.innerHTML += `
             ${contador + 1} - ${ListaNomeAlunos[contador]} (${ListaPosicaoAlunos[contador]}) <br>
             `
         }
+    }
+
+    function RealizarTreino() {
+        var NomeAluno = input_nome_aluno_treino_cadastrado.value;
+        var NotaFisico = Number(input_nota_aluno_treino_fisico_simulador.value);
+        var NotaTatico = Number(input_nota_aluno_treino_tatico_simulador.value);
+        var NotaBola = Number(input_nota_aluno_treino_bola_simulador.value);
+        var NotaEntrosamento = Number(input_nota_entrosamento_simulador.value);
+        var Media = (NotaFisico * 0.2) + (NotaTatico * 0.4) + (NotaBola * 0.2) + (NotaEntrosamento * 0.2); // A media foi feita com os pesos de cada nota, porque cada treino pode influenciar na partida
+
+        if (NomeAluno == "" || NotaFisico == "" || NotaTatico == "" || NotaBola == "") { //Caso tenha um campo vazio
+            alert('Todos os campos precisam ser preenchidos!')
+        } else {
+            for (var contadorAluno = 0; contadorAluno < ListaNomeAlunos.length; contadorAluno++) {//verificar se o aluno existe
+                if (NomeAluno == ListaNomeAlunos[contadorAluno]) { //Caso o nome esteja cadastrado mostre o resultado do treino
+                    if (Media == 10) {
+                        resultado_treino.innerHTML = `
+                        <span class="resultado_final">Com base nas notas do aluno ${NomeAluno} <br><br>
+                        Sua nota final foi: ${Media.toFixed(2)}<br><br>
+                        Este Aluno tem que ser TITULAR ABSOLUTO</span>
+                        `
+                    } else if (Media >= 7 && Media <= 9) {
+                        resultado_treino.innerHTML = `
+                        <span class="resultado_final">Com base nas notas do aluno ${NomeAluno} <br><br>
+                        Sua nota final foi: ${Media.toFixed(2)}<br><br>
+                        Este Aluno tem que ser TITULAR</span>
+                        `
+                    } else if (Media >= 4 && Media <= 6) {
+                        resultado_treino.innerHTML = `
+                        <span class="resultado_final">Com base nas notas do aluno ${NomeAluno} <br><br>
+                        Sua nota final foi: ${Media.toFixed(2)}<br><br>
+                        Este Aluno tem que ser RESERVA</span>
+                        `
+                    } else {
+                        resultado_treino.innerHTML = `
+                        <span class="resultado_final">Com base nas notas do aluno ${NomeAluno} <br><br>
+                        Sua nota final foi: ${Media.toFixed(2)}<br><br>
+                        Este Aluno não pode ser ESCALADO</span>
+                        `
+                    }
+                }
+            }
+        }
+
     }
 </script>
