@@ -120,19 +120,19 @@
         } else {
             for (var contadorAluno = 0; contadorAluno < ListaNomeAlunos.length; contadorAluno++) {//verificar se o aluno existe
                 if (NomeAluno == ListaNomeAlunos[contadorAluno]) { //Caso o nome esteja cadastrado mostre o resultado do treino
-                    if (Media == 10) {
+                    if (Media >= 9) {
                         resultado_treino.innerHTML = `
                         <span class="resultado_final">Com base nas notas do aluno ${NomeAluno} <br><br>
                         Sua nota final foi: ${Media.toFixed(2)}<br><br>
                         Este Aluno tem que ser TITULAR ABSOLUTO</span>
                         `
-                    } else if (Media >= 7 && Media <= 9) {
+                    } else if (Media >= 7 && Media < 9) {
                         resultado_treino.innerHTML = `
                         <span class="resultado_final">Com base nas notas do aluno ${NomeAluno} <br><br>
                         Sua nota final foi: ${Media.toFixed(2)}<br><br>
                         Este Aluno tem que ser TITULAR</span>
                         `
-                    } else if (Media >= 4 && Media <= 6) {
+                    } else if (Media >= 4 && Media < 7) {
                         resultado_treino.innerHTML = `
                         <span class="resultado_final">Com base nas notas do aluno ${NomeAluno} <br><br>
                         Sua nota final foi: ${Media.toFixed(2)}<br><br>
@@ -148,6 +148,6 @@
                 }
             }
         }
-
+        
     }
 </script>
