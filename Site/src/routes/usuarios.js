@@ -25,5 +25,8 @@ router.post("/autenticarAluno", function (req, res) {
     usuarioController.entrarAluno(req, res);
 });
 
+router.post("/autenticarProfessor", function (req, res) {
+    usuarioController.entrarProfessor(req, res);
+});
 
 module.exports = router;

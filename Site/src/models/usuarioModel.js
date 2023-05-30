@@ -9,6 +9,20 @@ function listar() {
     return database.executar(instrucao);
 }
 
+
+// Coloque os mesmos parâmetros aqui. Vá para a var instrucao
+function cadastrarAluno(nome, email, telefone, data, idEscolinha, posicao, senha) {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, telefone, data, idEscolinha, posicao, senha);
+
+    // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
+    //  e na ordem de inserção dos dados.
+    var instrucao = `
+    INSERT INTO Aluno (nomeAluno, emailAluno, TelefoneCelular, DataNasc, Posicao, Senha, fkEscolinha) VALUES ('${nome}', '${email}', '${telefone}','${data}','${posicao}', '${senha}', '${idEscolinha}');
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucao);
+    return database.executar(instrucao);
+}
+
 function entrarAluno(email, senha) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ", email, senha)
     var instrucao = `
@@ -18,22 +32,9 @@ function entrarAluno(email, senha) {
     return database.executar(instrucao);
 }
 
-// Coloque os mesmos parâmetros aqui. Vá para a var instrucao
-function cadastrarAluno(nome, email, telefone, data, idEscolinha, posicao, senha) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, telefone, data, idEscolinha, posicao, senha);
-    
-    // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
-    //  e na ordem de inserção dos dados.
-    var instrucao = `
-        INSERT INTO Aluno (nomeAluno, emailAluno, TelefoneCelular, DataNasc, Posicao, Senha, fkEscolinha) VALUES ('${nome}', '${email}', '${telefone}','${data}','${posicao}', '${senha}', '${idEscolinha}');
-    `;
-    console.log("Executando a instrução SQL: \n" + instrucao);
-    return database.executar(instrucao);
-}
-
 function cadastrarProfessor(nome, email, telefoneCelular, idEscolinha, senha) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, telefoneCelular, senha);
-    
+
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
     var instrucao = `
@@ -43,9 +44,19 @@ function cadastrarProfessor(nome, email, telefoneCelular, idEscolinha, senha) {
     return database.executar(instrucao);
 }
 
+function entrarProfessor(email, senha) {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ", email, senha)
+    var instrucao = `
+        SELECT * FROM Professor WHERE email = '${email}' AND Senha = '${senha}';
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucao);
+    return database.executar(instrucao);
+}
+
 module.exports = {
-    entrarAluno,
     cadastrarAluno,
+    entrarAluno,
     cadastrarProfessor,
+    entrarProfessor,
     listar,
 };
