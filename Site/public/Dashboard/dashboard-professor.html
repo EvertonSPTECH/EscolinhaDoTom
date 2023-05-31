@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/dashboard.css">
+    <title>Dashboards | Professor</title>
+</head>
+
+<body>
+    <div class="container_navegacao">
+        <div class="navegacao_usuario">
+            <img src="../IMG/Logo.png" alt="logo"><br>
+            Bem Vindo <br><br><span id="Professor_Usuario">Usuário</span><br>
+            <button onclick="Treinos()">Treinos</button><br>
+            <button>Alunos</button><br>
+            <button>Escolinha</button>
+        </div>
+        <div class="dados">
+            <br>
+            <div class="treinos display-none">
+                <h2><span>Treino da Semana</span></h2>
+                <div class="dados_treinos">
+                    <div class="treino nome_aluno">
+                        Digite o nome do Aluno: <br><input id="input_nome_aluno" type="text">
+                    </div>
+                    <div class="treino fisico">
+                        Nota <br> treino físico: <br> <input type="number" id="input_nota_fisico">
+                    </div>
+                    <div class="treino fundamentos">
+                        Nota <br> treino fundamentos: <br> <input type="number" id="input_nota_fundamentos">
+                    </div>
+                    <div class="treino tatico">
+                        Nota <br> treino tático: <br> <input type="number" id="input_nota_tatico">
+                    </div>
+                    <div class="treino coletivo">
+                        Nota <br> treino coletivo: <br> <input type="number" id="input_nota_coletivo">
+                    </div>
+                </div>
+                <button onclick="EnviarDados()">Enviar Dados</button>
+                <div class="dados_enviados">Dados Enviados com Sucesso... <br> Segue o resultado abaixo!</div>
+                <div class="dados_erro">Ocorreu um erro... <br> verifique os campos!</div>
+                <div class="resultado_treino">
+                    <h1>Relatório do Treino de 'Aluno'</h1>
+                    Treino Físico: 10 <br>
+                    Treino Fundamentos: 5 <br>
+                    Treino Tático: 10 <br>
+                    Treino Coletivo: 10
+                    <h3>Este aluno tem que ser titular</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    function Treinos() {
+
+    }
+</script>
