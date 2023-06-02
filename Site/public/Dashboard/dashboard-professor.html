@@ -13,18 +13,18 @@
     <div class="container_navegacao">
         <div class="navegacao_usuario">
             <img src="../IMG/Logo.png" alt="logo"><br>
-            Bem Vindo <br><br><span id="Professor_Usuario">Usuário</span><br>
+            Bem Vindo <br><br><span id="Professor_Usuario"></span><br>
             <button onclick="Treinos()">Treinos</button><br>
             <button>Alunos</button><br>
             <button>Escolinha</button>
         </div>
         <div class="dados">
             <br>
-            <div class="treinos display-none">
+            <div id="treinos" class="treinos">
                 <h2><span>Treino da Semana</span></h2>
                 <div class="dados_treinos">
                     <div class="treino nome_aluno">
-                        Digite o nome do Aluno: <br><input id="input_nome_aluno" type="text">
+                        Digite o código do Aluno: <br><input id="input_codigo_aluno" type="number">
                     </div>
                     <div class="treino fisico">
                         Nota <br> treino físico: <br> <input type="number" id="input_nota_fisico">
@@ -40,16 +40,10 @@
                     </div>
                 </div>
                 <button onclick="EnviarDados()">Enviar Dados</button>
-                <div class="dados_enviados">Dados Enviados com Sucesso... <br> Segue o resultado abaixo!</div>
-                <div class="dados_erro">Ocorreu um erro... <br> verifique os campos!</div>
-                <div class="resultado_treino">
-                    <h1>Relatório do Treino de 'Aluno'</h1>
-                    Treino Físico: 10 <br>
-                    Treino Fundamentos: 5 <br>
-                    Treino Tático: 10 <br>
-                    Treino Coletivo: 10
-                    <h3>Este aluno tem que ser titular</h3>
-                </div>
+                <div id="dados_enviados" class="dados_enviados">Dados Enviados com Sucesso... <br> Segue o resultado
+                    abaixo!</div>
+                <div id="dados_erro" class="dados_erro"></div>
+                <div id="resultado_treino" class="resultado_treino"></div>
             </div>
         </div>
     </div>
@@ -57,7 +51,154 @@
 
 </html>
 <script>
-    function Treinos() {
+    Professor_Usuario.innerHTML = sessionStorage.NOME_USUARIO;
 
+    var treino_acionado = 0;
+
+    // Acionando o botão para mostrar a div de treinos
+    function Treinos() {
+        if (treino_acionado == 0) {
+            treinos.style.display = "block"
+            treino_acionado = 1
+        } else if (treino_acionado == 1) {
+            treinos.style.display = "none"
+            treino_acionado = 0
+        }
+    }
+
+    function EnviarDados() {
+        // Recebendo valores das inputs (Nome do Aluno e as notas do treino)
+        var CodigoAluno = input_codigo_aluno.value;
+        var NotaFisico = Number(input_nota_fisico.value);
+        var NotaFundamentos = Number(input_nota_fundamentos.value);
+        var NotaTatico = Number(input_nota_tatico.value);
+        var NotaColetivo = Number(input_nota_coletivo.value);
+        var MediaFinal = (NotaFisico * 0.20) + (NotaFundamentos * 0.20) + (NotaTatico * 0.20) + (NotaColetivo * 0.40);
+
+        // É importante ter o nome do aluno para realizarmos a consulta no banco de dados
+        // Caso a input esteja nula irá emitir o seguinte erro
+        if (CodigoAluno == "") {
+            dados_erro.style.display = "block"
+            dados_erro.style.height = "fit-content"
+            dados_erro.innerHTML = `Ocorreu um erro... <br> O código do aluno não pode estar nulo!`
+            setInterval(sumirMensagemErro, 5000)
+        }
+        // Caso tenha alguma input das notas nula também irá emitir um erro
+        else if (NotaFisico == "" || NotaFundamentos == "" || NotaTatico == "" || NotaColetivo == "") {
+            dados_erro.style.display = "block"
+            dados_erro.style.height = "fit-content"
+            dados_erro.innerHTML = `Ocorreu um erro... <br> Nenhum campo de treino pode estar nulo!`
+            setInterval(sumirMensagemErro, 5000)
+        }
+        // Caso tenha alguma nota abaixo de 0 ou acima de 10 irá emitir um erro
+        else if (NotaFisico < 0 || NotaFisico > 10 || NotaFundamentos < 0 || NotaFundamentos > 10 || NotaTatico < 0 || NotaTatico > 10 || NotaColetivo < 0 || NotaColetivo > 10) {
+            dados_erro.style.display = "block"
+            dados_erro.style.height = "fit-content"
+            dados_erro.innerHTML = `Ocorreu um erro... <br> Nenhum campo de treino pode estar abaixo de 0 ou acima de 10!`
+            setInterval(sumirMensagemErro, 5000)
+        }
+        // Após passar pelas validações irá mostrar o resultado do atleta para o usuário e irá enviar os dados para o banco de dados
+        else {
+
+            fetch("/treinos/buscarAluno", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    CodigoAlunoServer: CodigoAluno
+                })
+            }).then(function (resposta) {
+                console.log("ESTOUN NO THEN DO entrar()")
+
+                if (resposta.ok) {
+                    console.log(resposta);
+
+                    resposta.json().then(json => {
+                        console.log(json);
+                        console.log(JSON.stringify(json));
+
+                        sessionStorage.setItem("NOME_ALUNO", json.nomeAluno);
+                        // sessionStorage.NOME_ALUNO = json.nomeAluno;
+
+                        dados_enviados.style.display = "block"
+                        resultado_treino.style.display = "block"
+                        resultado_treino.style.height = "fit-content"
+                        resultado_treino.innerHTML = `
+            <h1>Relatório do Treino de ${sessionStorage.getItem("NOME_ALUNO")}</h1>
+            Treino Físico: ${NotaFisico.toFixed(2)} <br>
+            Treino Fundamentos: ${NotaFundamentos.toFixed(2)} <br>
+            Treino Tático: ${NotaTatico.toFixed(2)} <br>
+            Treino Coletivo: ${NotaColetivo.toFixed(2)}   
+            <h3> Média Final: ${MediaFinal.toFixed(2)} </h3>
+            `
+                        if (MediaFinal >= 9) {
+                            resultado_treino.innerHTML += `
+                <h2>O Aluno teve um treino de grande atleta hoje</h2>
+                `
+                        } else if (MediaFinal >= 7 && MediaFinal < 9) {
+                            resultado_treino.innerHTML += `
+                <h2>O Aluno teve um bom treino hoje</h2>
+                `
+                        } else if (MediaFinal >= 5 && MediaFinal < 7) {
+                            resultado_treino.innerHTML += `
+                <h2>O Aluno teve um treino médio hoje</h2>
+                `
+                        } else {
+                            resultado_treino.innerHTML += `
+                <h2>O Aluno não teve um bom treino hoje, merece uma atenção no rendimento</h2>
+                `
+                        }
+                        setInterval(sumirMensagemDadosEnviados, 5000)
+                    });
+
+                } else {
+                    dados_erro.style.display = "block"
+                    dados_erro.style.height = "fit-content"
+                    dados_erro.innerHTML = `Ocorreu um erro... <br> Não contém jogador com este ID!`
+                    setInterval(sumirMensagemErro, 5000)
+                }
+            });
+
+
+            // dados_enviados.style.display = "block"
+            // resultado_treino.style.display = "block"
+            // resultado_treino.style.height = "fit-content"
+            // resultado_treino.innerHTML = `
+            // <h1>Relatório do Treino de ${sessionStorage.getItem("NOME_ALUNO")}</h1>
+            // Treino Físico: ${NotaFisico.toFixed(2)} <br>
+            // Treino Fundamentos: ${NotaFundamentos.toFixed(2)} <br>
+            // Treino Tático: ${NotaTatico.toFixed(2)} <br>
+            // Treino Coletivo: ${NotaColetivo.toFixed(2)}   
+            // <h3> Média Final: ${MediaFinal.toFixed(2)} </h3>
+            // `
+            // if (MediaFinal >= 9) {
+            //     resultado_treino.innerHTML += `
+            //     <h2>O Aluno teve um treino de grande atleta hoje</h2>
+            //     `
+            // } else if (MediaFinal >= 7 && MediaFinal < 9) {
+            //     resultado_treino.innerHTML += `
+            //     <h2>O Aluno teve um bom treino hoje</h2>
+            //     `
+            // } else if (MediaFinal >= 5 && MediaFinal < 7) {
+            //     resultado_treino.innerHTML += `
+            //     <h2>O Aluno teve um treino médio hoje</h2>
+            //     `
+            // } else {
+            //     resultado_treino.innerHTML += `
+            //     <h2>O Aluno não teve um bom treino hoje, merece uma atenção no rendimento</h2>
+            //     `
+            // }
+            // setInterval(sumirMensagemDadosEnviados, 5000)
+
+        }
+    }
+
+    function sumirMensagemDadosEnviados() {
+        dados_enviados.style.display = "none"
+    }
+
+    function sumirMensagemErro() {
+        dados_erro.style.display = "none"
     }
 </script>

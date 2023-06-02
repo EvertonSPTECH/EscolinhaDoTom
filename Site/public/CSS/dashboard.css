@@ -1,4 +1,5 @@
 body{
+    /* position: fixed; */
     background-image: url(../IMG/barcelona.jpg);
     background-repeat: no-repeat;
     background-size: 100%;
@@ -83,6 +84,7 @@ body{
 }
 
 .treinos{
+    display: none;
     text-align: center;
     /* background: white; */
     width: 100%;
@@ -115,7 +117,7 @@ body{
 
 .treinos button:hover{
     font-size: 25px;
-    border: 2px solid #F0E221;
+    border: 3px solid #F0E221;
     background-color: black;
     color: #F0E221;
     cursor:pointer;
@@ -195,7 +197,7 @@ body{
 
 .dados_enviados{
     display: none;
-    font-size: 25px;
+    font-size: 15px;
     padding-top:10px;
     transition: 2s;
     border: 2px solid black;
@@ -204,7 +206,7 @@ body{
     margin-left: 35%;
     background: #F0E221;
     width: 30%;
-    height: 80px;
+    height: 50px;
 }
 
 .dados_erro{
