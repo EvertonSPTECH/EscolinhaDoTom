@@ -84,10 +84,12 @@ body{
 }
 
 .treinos{
+    margin-top: 2%;
+    margin-left: 8%;
     display: none;
     text-align: center;
     /* background: white; */
-    width: 100%;
+    width: 84%;
     height: 200px;
 }
 
@@ -235,4 +237,34 @@ body{
     padding: 20px;
     background: black;
     color: #F0E221;
+}
+
+#alunos_cadastrados{
+    display: none;
+    border: 5px solid black;
+    border-radius: 25px;
+    margin-top: 3%;
+    top: 10px;
+    background-color: white;
+    margin-left: 10%;
+    width: 80%;
+    height: 200px;
+}
+
+#alunos_cadastrados h2{
+    text-align: center;
+}
+
+.dados{
+    margin-left: 3%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.card{
+    width: fit-content;
+}
+
+.card h3{
+    border-bottom: 2px solid black;
 }

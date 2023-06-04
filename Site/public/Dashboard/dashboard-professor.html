@@ -15,7 +15,7 @@
             <img src="../IMG/Logo.png" alt="logo"><br>
             Bem Vindo <br><br><span id="Professor_Usuario"></span><br>
             <button onclick="Treinos()">Treinos</button><br>
-            <button>Alunos</button><br>
+            <button onclick="Alunos()">Alunos</button><br>
             <button>Escolinha</button>
         </div>
         <div class="dados">
@@ -45,6 +45,26 @@
                 <div id="dados_erro" class="dados_erro"></div>
                 <div id="resultado_treino" class="resultado_treino"></div>
             </div>
+            <div id="alunos_cadastrados">
+                <h2>Alunos Cadastrados</h2>
+                <div class="dados">
+                    <div class="card cod_aluno" id="id_aluno">
+                        <h3>Código Aluno</h3>
+                    </div>
+                    <div class="card nome_aluno" id="nome_aluno">
+                        <h3>Nome Aluno</h3>
+                    </div>
+                    <div class="card posicao_aluno" id="posicao_aluno">
+                        <h3>Posição Aluno</h3>
+                    </div>
+                    <div class="card data_nascimento" id="data_nascimento">
+                        <h3>Data Nascimento</h3>
+                    </div>
+                    <div class="card telefone_aluno" id="telefone_aluno">
+                        <h3>Telefone Aluno</h3>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
@@ -59,10 +79,24 @@
     function Treinos() {
         if (treino_acionado == 0) {
             treinos.style.display = "block"
+            alunos_cadastrados.style.display = "none"
             treino_acionado = 1
         } else if (treino_acionado == 1) {
             treinos.style.display = "none"
             treino_acionado = 0
+        }
+    }
+
+    var alunos_acionado = 0;
+
+    function Alunos() {
+        if (alunos_acionado == 0) {
+            alunos_cadastrados.style.display = "block"
+            treinos.style.display = "none"
+            alunos_acionado = 1
+        } else if (alunos_acionado == 1) {
+            alunos_cadastrados.style.display = "none"
+            alunos_acionado = 0;
         }
     }
 
@@ -160,37 +194,34 @@
                 }
             });
 
+            fetch("/treinos/inserirDadosTreino", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    CodigoAlunoServer: CodigoAluno,
+                    NotaFisicoServer: NotaFisico,
+                    NotaFundamentosServer: NotaFundamentos,
+                    NotaTaticoServer: NotaTatico,
+                    NotaColetivoServer: NotaColetivo,
+                    MediaFinalServer: MediaFinal
+                })
+            }).then(function (resposta) {
 
-            // dados_enviados.style.display = "block"
-            // resultado_treino.style.display = "block"
-            // resultado_treino.style.height = "fit-content"
-            // resultado_treino.innerHTML = `
-            // <h1>Relatório do Treino de ${sessionStorage.getItem("NOME_ALUNO")}</h1>
-            // Treino Físico: ${NotaFisico.toFixed(2)} <br>
-            // Treino Fundamentos: ${NotaFundamentos.toFixed(2)} <br>
-            // Treino Tático: ${NotaTatico.toFixed(2)} <br>
-            // Treino Coletivo: ${NotaColetivo.toFixed(2)}   
-            // <h3> Média Final: ${MediaFinal.toFixed(2)} </h3>
-            // `
-            // if (MediaFinal >= 9) {
-            //     resultado_treino.innerHTML += `
-            //     <h2>O Aluno teve um treino de grande atleta hoje</h2>
-            //     `
-            // } else if (MediaFinal >= 7 && MediaFinal < 9) {
-            //     resultado_treino.innerHTML += `
-            //     <h2>O Aluno teve um bom treino hoje</h2>
-            //     `
-            // } else if (MediaFinal >= 5 && MediaFinal < 7) {
-            //     resultado_treino.innerHTML += `
-            //     <h2>O Aluno teve um treino médio hoje</h2>
-            //     `
-            // } else {
-            //     resultado_treino.innerHTML += `
-            //     <h2>O Aluno não teve um bom treino hoje, merece uma atenção no rendimento</h2>
-            //     `
-            // }
-            // setInterval(sumirMensagemDadosEnviados, 5000)
+                console.log("resposta: ", resposta);
 
+                if (resposta.ok) {
+                    alert('Cadastro dos treinos realizado com sucesso!');
+                    
+                } else {
+                    throw ("Houve um erro ao tentar realizar o cadastro!");
+                }
+            }).catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+            });
+
+            return false;
         }
     }
 

@@ -26,32 +26,64 @@ CREATE TABLE Aluno(
 	idAluno INT PRIMARY KEY AUTO_INCREMENT,
     nomeAluno VARCHAR(45),
     emailAluno VARCHAR(45),
-    TelefoneCelular CHAR(11),
+		TelefoneCelular CHAR(11),
     DataNasc DATE,
     Posicao VARCHAR (45),
     Senha CHAR (8),
     fkEscolinha INT, CONSTRAINT fkAlunoEscolinha FOREIGN KEY (fkEscolinha) REFERENCES Escolinha (idEscolinha)
 );
 
+INSERT INTO Aluno VALUES
+(null, 'Fernando Varjão', 'junior@gmail.com', '11912345678', '2006-12-13', 'Goleiro', '87654321', 1);
+
 CREATE TABLE Treino(
-	idTreino INT,
+	idTreino INT PRIMARY KEY AUTO_INCREMENT,
     Tipo VARCHAR(45),
-    TamanhoTreino CHAR(1), CONSTRAINT ckTramanhoTreino CHECK (TamanhoTreino IN ('P', 'M', 'G'))
+    Descricao VARCHAR (45)
 );
 
+INSERT INTO Treino VALUES
+(null, 'Fisico', 'Fortalecimento e Resistência'),
+(null, 'Fundamentos', 'Controle de Bola, Passes e Finalização'),
+(null, 'Tatico', 'Posicionamento e Noção de Jogo'),
+(null, 'Coletivo', 'Envolve todos os treinos e Entrosamento');
+
+SELECT * FROM Treino;
+
 CREATE TABLE Sessao(
-	idSessao INT,
+	idSessao INT AUTO_INCREMENt,
     DataSessao DATETIME,
-    Duracao TIME,
     NotaAluno INT,
     fkTreino INT, CONSTRAINT fkTreinoSessao FOREIGN KEY (fkTreino) REFERENCES Treino (idTreino),
     fkAluno INT, CONSTRAINT fkSessaoAluno FOREIGN KEY (fkAluno) REFERENCES Aluno (idAluno),
     CONSTRAINT pkSessao PRIMARY KEY (idSessao, fkAluno)
 );
 
-SELECT * FROM Aluno;
+SELECT * FROM Sessao;
+
+SELECT nomeAluno FROM Aluno WHERE idAluno = 3;
+
 SELECT * FROM Escolinha;
 SELECT * FROM Professor;	
 SELECT Professor.nome, Aluno.nomeAluno, Aluno.Posicao, Escolinha.nomeTime FROM Escolinha
 	LEFT JOIN Professor ON Escolinha.idEscolinha = Professor.fkEscolinha 
 		JOIN Aluno ON Escolinha.idEscolinha = Aluno.fkEscolinha;
+        
+SELECT 
+	idAluno as "Codigo Aluno",
+    nomeAluno as "Nome Aluno",
+    Posicao as "Posição Aluno",
+    DATE_FORMAT(dataNasc, '%d/%m/%Y') as "Data Nascimento",
+    telefoneCelular as "Telefone Aluno"
+ FROM Aluno;
+ 
+ SELECT 
+	Aluno.nomeAluno AS Nome_Aluno,
+    Treino.Tipo AS Treino,
+    Sessao.NotaAluno AS Nota,
+    DATE_FORMAT(DataSessao, '%d/%m/%Y') AS Data_Treino
+FROM Aluno 
+	JOIN Sessao ON idAluno = fkAluno 
+	JOIN Treino ON idTreino = fkTreino
+    LIMIT 20;
+    

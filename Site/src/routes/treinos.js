@@ -14,4 +14,8 @@ router.post("/buscarAluno", function (req, res) {
 router.get("/listarAlunos", function (req, res) {
     treinoController.listarAlunos(req, res);
 });
+
+router.post("/inserirDadosTreino", function (req, res){
+    treinoController.inserirDadosTreino(req, res);
+})
 module.exports = router;
