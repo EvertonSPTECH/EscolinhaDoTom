@@ -2,6 +2,7 @@ CREATE DATABASE EscolinhaTom;
 
 USE EscolinhaTom;
 
+
 CREATE TABLE Escolinha(
 	idEscolinha INT PRIMARY KEY AUTO_INCREMENT,
     nomeTime VARCHAR(45),
@@ -12,6 +13,11 @@ CREATE TABLE Escolinha(
     Numero VARCHAR (45),
     Senha CHAR(8)
 );
+
+INSERT INTO Escolinha VALUES
+(null, 'Paris Sarandi SC', 'parissarandi@gmail.com', '1112345678', '11912345678', '08490490', '7', '12345678');
+
+SELECT * FROM Aluno;
 
 CREATE TABLE Professor(
 	idProfessor INT PRIMARY KEY AUTO_INCREMENT,
@@ -48,7 +54,15 @@ INSERT INTO Treino VALUES
 (null, 'Tatico', 'Posicionamento e Noção de Jogo'),
 (null, 'Coletivo', 'Envolve todos os treinos e Entrosamento');
 
-SELECT * FROM Treino;
+SELECT * FROM Sessao;
+SELECT 
+	Sessao.NotaAluno AS Nota,
+    DATE_FORMAT(Sessao.DataSessao, '%d/%m%Y') AS Data,
+    Treino.Tipo AS Treino,
+    Aluno.nomeAluno AS Nome_Aluno FROM Sessao
+		JOIN Aluno ON idAluno = fkAluno
+			JOIN Treino ON idTreino = fkTreino WHERE Aluno.idAluno = 1
+				 ORDER BY Sessao.DataSessao DESC LIMIT 4 ;
 
 CREATE TABLE Sessao(
 	idSessao INT AUTO_INCREMENt,
@@ -59,7 +73,9 @@ CREATE TABLE Sessao(
     CONSTRAINT pkSessao PRIMARY KEY (idSessao, fkAluno)
 );
 
-SELECT * FROM Sessao;
+SELECT * FROM Aluno;
+DROP TABLE Aluno;
+DROP TABLE Sessao;
 
 SELECT nomeAluno FROM Aluno WHERE idAluno = 3;
 
