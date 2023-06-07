@@ -1,26 +1,224 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../CSS/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Dashboard Aluno</title>
 </head>
 
 <body>
-    <div class="container_dados_navegacao">
-        <div class="navegacao_usuario">
-            <div class="logo_navegacao">
-
+    <div class="container_navegacao">
+        <div class="container_dados">
+            <div class="navegacao_usuario">
+                <img src="../IMG/Logo.png" alt="logo"><br>
+                Bem Vindo <br><br><span id="Aluno_Usuario"></span><br>
+                <button onclick="Evolucao()">Resultado Treino</button><br>
             </div>
         </div>
-
         <div class="dados">
+            <div id="resumo_aluno">
+                <h1>Bem Vindo!</h1>
+                <p>Esta tela é onde você pode ver o resultado de seu último treino
+                    e poderá se deparar com um gráfico mostrando seus pontos fortes e fracos,
+                    com as seguintes opções:<br><br>
+                    Físico: Caso seja um atleta com ótima resistência e força física.<br><br>
+                    Fundamentos: Caso seja um atleta com bom passe, chute, domínio e controle de bola.<br><br>
+                    Tático: Caso seja um atleta com ótima visão de jogo e posicionamento em campo. <br><br>
+                    Coletivo: Caso seja um atleta que joga pela equipe e tenha união com seus companheiros. <br><br>
+                </p>
+                <h2>Card Jogador</h2>
+                <div class="cards_resumo">
+                    <div class="card_resumo bronze">
+                        Quando o jogador tem sua nota abaixo de 70, recebe um card com valor bronze, por não ter um bom rendimento.
+                    </div>
+                    <div class="card_resumo prata">
+                        Quando o jogador tem sua nota abaixo de 80, recebe um card com valor prata, por ter um rendimento mediano.
+                    </div>
+                    <div class="card_resumo ouro">
+                        Quando o jogador tem sua nota acima de 80, recebe um card com valor ouro, por ter um bom rendimento.
+                    </div>
+                </div>
+            </div>
+            <div id="Dashboards" class="Dashboards">
+                <h2>Resultado Último Treino</h2>
+                <div class="grafico">
+                    <canvas id="MyChart"></canvas>
+                </div>
+                <div id="card_jogador" class="card_jogador">
+                    <div class="container_dados">
+                        <div class="card_jogador_dados">
+                            <span id="total_overall_jogador"></span><br>
+                            <img src="../IMG/Logo.png"><br>
+                            <b><span id="posicao_card"></span></b>
+                        </div>
+                        <div class="card_jogador_img">
+                            <img src="../IMG/icon_jogador.png">
+                        </div>
+                    </div>
+                    <span id="nome_jogador_card"></span>
+                    <div class="skills_jogador">
+                        <div class="lado_um">
+                            <b id="TAT"></b> TAT <br>
+                            <b id="FIS"></b> FIS <br>
+                        </div>
+                        <div class="lado_dois">
+                            <b id="FUN"></b> FUN <br>
+                            <b id="COL"></b> COL <br>
 
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
     </div>
 </body>
 
 </html>
+<script>
+
+    var EvolucaoAcionado = 1;
+    function Evolucao(){
+        if(EvolucaoAcionado == 0){
+            Dashboards.style.display = "none";
+            resumo_aluno.style.display = "block";
+            EvolucaoAcionado = 1;
+        } else {
+            Dashboards.style.display = "block";
+            resumo_aluno.style.display = "none";
+            EvolucaoAcionado = 0;
+        }
+    }
+
+    var ListaFisico = [];
+    var ListaFundamentos = [];
+    var ListaTatico = [];
+    var ListaColetivo = [];
+
+    var registro = []
+    Aluno_Usuario.innerHTML = sessionStorage.NOME_USUARIO;
+    nome_jogador_card.innerHTML = sessionStorage.NOME_USUARIO;
+    posicao_card.innerHTML = sessionStorage.POSICAO_ALUNO;
+
+
+    let proximaAtualizacao;
+
+    window.onload = obterDadosGraficos();
+
+
+    function obterDadosGraficos() {
+        var idAluno = Number(sessionStorage.ID_USUARIO);
+        obterDadosGrafico(idAluno)
+    }
+
+    function obterDadosGrafico(idAluno) {
+
+        if (proximaAtualizacao != undefined) {
+            clearTimeout(proximaAtualizacao);
+        }
+
+        fetch(`/medidas/ultimas/${idAluno}`, { cache: 'no-store' }).then(function (response) {
+            if (response.ok) {
+                response.json().then(function (resposta) {
+                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+                    resposta.reverse();
+
+                    plotarGrafico(resposta, idAluno);
+                });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
+            });
+    }
+
+    total_fisico = 0;
+    total_tatico = 0;
+    total_fundamento = 0;
+    total_coletivo = 0;
+
+    function plotarGrafico(resposta, idAluno) {
+
+        console.log('iniciando plotagem do gráfico...');
+
+        let dados_treino = {
+            labels: [
+                'Físico',
+                'Tático',
+                'Fundamento',
+                'Coletivo'
+            ],
+            datasets: [{
+                label: 'Resultado Último Treino',
+                data: [
+                    total_fisico,
+                    total_tatico,
+                    total_fundamento,
+                    total_coletivo
+                ],
+                fill: false,
+                backgroundColor: 'rgba(255, 255, 0, 0.2)',
+                borderColor: '#F0E221',
+                pointBackgroundColor: '#F0E221',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#F0E221',
+                tension: 0.1
+
+            }]
+        }
+
+        ListaColetivo.unshift(resposta[3].Nota);
+        ListaTatico.unshift(resposta[2].Nota);
+        ListaFundamentos.unshift(resposta[1].Nota);
+        ListaFisico.unshift(resposta[0].Nota);
+
+        for (i = 0; i < resposta.length; i++) {
+
+
+            dados_treino.datasets[0].data[0] = resposta[3].Nota
+            dados_treino.datasets[0].data[1] = resposta[2].Nota
+            dados_treino.datasets[0].data[2] = resposta[1].Nota
+            dados_treino.datasets[0].data[3] = resposta[0].Nota
+        }
+
+        const config = {
+            type: 'radar',
+            data: dados_treino
+        };
+
+        let MyChart = new Chart(
+            document.getElementById(`MyChart`),
+            config
+        );
+
+        Coletivo = Number(ListaColetivo[0]) * 10 - 1;
+        Fundamentos = Number(ListaFundamentos[0]) * 10 - 1;
+        Fisico = Number(ListaFisico[0]) * 10 - 1;
+        Tatico = Number(ListaTatico[0]) * 10 - 1;
+
+        MediaFinal = parseInt((Coletivo + Fundamentos + Tatico + Fisico) / 4);
+
+        total_overall_jogador.innerHTML = MediaFinal;
+        FIS.innerHTML = Fisico;
+        TAT.innerHTML = Tatico;
+        FUN.innerHTML = Fundamentos;
+        COL.innerHTML = Coletivo;
+
+
+        if (MediaFinal > 80) {
+            card_jogador.style.backgroundColor = "yellow"   
+        } else if (MediaFinal < 70){
+            card_jogador.style.backgroundColor = "#BF8970"
+        } else {
+            card_jogador.style.backgroundColor = "lightgray"
+        }
+    }
+
+</script>

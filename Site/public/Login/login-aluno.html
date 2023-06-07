@@ -72,9 +72,10 @@
                     console.log(json);
                     console.log(JSON.stringify(json));
 
-                    sessionStorage.EMAIL_USUARIO = json.email;
-                    sessionStorage.NOME_USUARIO = json.nome;
-                    sessionStorage.ID_USUARIO = json.id;
+                    sessionStorage.EMAIL_USUARIO = json.emailAluno;
+                    sessionStorage.NOME_USUARIO = json.nomeAluno;
+                    sessionStorage.ID_USUARIO = json.idAluno;
+                    sessionStorage.POSICAO_ALUNO = json.Posicao;
 
                     setTimeout(function () {
                         window.location = "../Dashboard/dashboard-aluno.html";

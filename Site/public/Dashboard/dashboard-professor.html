@@ -16,10 +16,23 @@
             Bem Vindo <br><br><span id="Professor_Usuario"></span><br>
             <button onclick="Treinos()">Treinos</button><br>
             <button onclick="Alunos()">Alunos</button><br>
-            <button>Escolinha</button>
         </div>
         <div class="dados">
-            <br>
+            <div id="resumo_aluno">
+                <h1>Bem Vindo!</h1>
+                <p>
+                    Esta tela é onde o professor poderá avaliar o treino de seus alunos através do botão Treinos. <br><br>
+                    No Treino o professor irá avaliar os alunos nos seguintes treinos:<br><br>
+                    Físico: Caso seja um atleta com ótima resistência e força física.<br><br>
+                    Fundamentos: Caso seja um atleta com bom passe, chute, domínio e controle de bola.<br><br>
+                    Tático: Caso seja um atleta com ótima visão de jogo e posicionamento em campo. <br><br>
+                    Coletivo: Caso seja um atleta que joga pela equipe e tenha união com seus companheiros. <br><br>
+                    Também poderá ver os alunos cadastrados no botão Alunos. <br><br>
+                    Esta área do professor é importante porque é daqui que os dados dos alunos são gerados e enviados para eles analisar
+                    se tiveram um treino bom, ruim ou mediano, o importante daqui é que o professor poderá ver o resultado do treino e dar
+                    um feedback para os alunos pessoalmente.
+                </p>
+            </div>
             <div id="treinos" class="treinos">
                 <h2><span>Treino da Semana</span></h2>
                 <div class="dados_treinos">
@@ -47,7 +60,7 @@
             </div>
             <div id="alunos_cadastrados">
                 <h2>Alunos Cadastrados</h2>
-                <div class="dados">
+                <div class="dados_aluno">
                     <div class="card cod_aluno" id="id_aluno">
                         <h3>Código Aluno</h3>
                     </div>
@@ -79,10 +92,14 @@
     function Treinos() {
         if (treino_acionado == 0) {
             treinos.style.display = "block"
+            resumo_aluno.style.display = "none";
             alunos_cadastrados.style.display = "none"
             treino_acionado = 1
+            alunos_acionado = 0;
         } else if (treino_acionado == 1) {
             treinos.style.display = "none"
+            alunos_cadastrados.style.display = "none"
+            resumo_aluno.style.display = "block";
             treino_acionado = 0
         }
     }
@@ -92,11 +109,17 @@
     function Alunos() {
         if (alunos_acionado == 0) {
             alunos_cadastrados.style.display = "block"
+            resumo_aluno.style.display = "none";
             treinos.style.display = "none"
-            alunos_acionado = 1
+            alunos_acionado = 1;
+            treino_acionado = 0;
         } else if (alunos_acionado == 1) {
+            resumo_aluno.style.display = "block";
             alunos_cadastrados.style.display = "none"
+            treinos.style.display = "none"
             alunos_acionado = 0;
+        } else {
+            resumo_aluno.style.display = "block";
         }
     }
 
@@ -213,7 +236,7 @@
 
                 if (resposta.ok) {
                     alert('Cadastro dos treinos realizado com sucesso!');
-                    
+
                 } else {
                     throw ("Houve um erro ao tentar realizar o cadastro!");
                 }
@@ -231,5 +254,60 @@
 
     function sumirMensagemErro() {
         dados_erro.style.display = "none"
+    }
+
+    let proximaAtualizacao;
+
+    window.onload = obterDadosAlunos();
+
+    function obterDadosAlunos() {
+        var idEscolinha = Number(sessionStorage.ID_ESCOLINHA);
+        obterDadosAluno(idEscolinha)
+    }
+
+    function obterDadosAluno(idEscolinha) {
+        if (proximaAtualizacao != undefined) {
+            clearTimeout(proximaAtualizacao);
+        }
+
+        fetch(`/medidas/alunos/${idEscolinha}`, { cache: 'no-store' }).then(function (response) {
+            if (response.ok) {
+                response.json().then(function (resposta) {
+                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+                    resposta.reverse();
+
+                    plotarDados(resposta, idEscolinha);
+                });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+            .catch(function (error) {
+                console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
+            });
+    }
+
+    function plotarDados(resposta, idEscolinha) {
+        for (i = 0; i < resposta.length; i++) {
+            id_aluno.innerHTML += `
+            ${resposta[i].CodigoAluno}<br><br>
+            `
+
+            nome_aluno.innerHTML += `
+            ${resposta[i].NomeAluno}<br><br>
+            `
+
+            posicao_aluno.innerHTML += `
+            ${resposta[i].Posicao}<br><br>
+            `
+
+            data_nascimento.innerHTML += `
+            ${resposta[i].DataNasc}<br><br>
+            `
+
+            telefone_aluno.innerHTML += `
+            ${resposta[i].Telefone}<br><br>
+            `
+        }
     }
 </script>
