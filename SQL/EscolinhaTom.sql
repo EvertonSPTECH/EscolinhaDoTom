@@ -74,6 +74,7 @@ CREATE TABLE Sessao(
 );
 
 SELECT * FROM Aluno;
+SELECT * FROM Professor;
 DROP TABLE Aluno;
 DROP TABLE Sessao;
 
@@ -102,4 +103,12 @@ FROM Aluno
 	JOIN Sessao ON idAluno = fkAluno 
 	JOIN Treino ON idTreino = fkTreino
     LIMIT 20;
+    
+    
+	SELECT 
+		idAluno AS CodigoAluno,
+		nomeAluno AS NomeAluno,
+		Posicao AS Posicao,
+		DATE_FORMAT(DataNasc, '%d/%m/%Y') AS DataNasc,
+		TelefoneCelular AS Telefone FROM Aluno WHERE fkEscolinha = 1;
     
